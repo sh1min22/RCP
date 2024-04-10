@@ -1,0 +1,4 @@
+MATCH (p{id: "29965873"})<-[:influences*1..3]-(p1)
+WHERE p <> p1
+RETURN p1
+LIMIT 1

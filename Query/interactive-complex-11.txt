@@ -1,0 +1,21 @@
+MATCH (person:Person {id: "21866935" })-[:knows*1..2]-(friend:Person)
+WHERE not(person=friend)
+WITH friend
+ORDER BY friend.lastName ASC
+RETURN DISTINCT friend
+LIMIT 1000
+
+MATCH (company:Organisation)-[:isLocatedIn]->(:Place {id: "21865554" })
+RETURN company
+
+MATCH (friend:Person)-[workat:workAt]->(company:Organisation)
+RETURN
+        friend.id AS personId,
+        friend.firstName AS personFirstName,
+        friend.lastName AS personLastName,
+        company.name AS organizationName,
+        workat.workFrom AS organizationWorkFromYear,
+        company.id AS organizationId
+ORDER BY
+        organizationWorkFromYear ASC,
+        organizationName DESC

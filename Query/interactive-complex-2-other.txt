@@ -1,0 +1,35 @@
+MATCH (:Person {id: "933"})-[:knows]-(friend:Person)
+RETURN DISTINCT friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN DISTINCT friend
+
+MATCH (friend:Person)
+WITH friend
+MATCH (friend:Person)<-[:hasCreator]-(post:Post)
+RETURN
+    friend.id AS personId,
+    friend.firstName AS personFirstName,
+    friend.lastName AS personLastName,
+    post.id AS postOrCommentId,
+    coalesce(post.content, post.imageFile) AS postOrCommentContent,
+    post.creationDate AS postOrCommentCreationDate
+ORDER BY
+    postOrCommentCreationDate DESC,
+    toInteger(postOrCommentId) ASC
+LIMIT 20
+
+MATCH (friend:Person)
+WITH friend
+MATCH (friend:Person)<-[:hasCreator]-(comment:Comment)
+RETURN
+    friend.id AS personId,
+    friend.firstName AS personFirstName,
+    friend.lastName AS personLastName,
+    comment.id AS postOrCommentId,
+    coalesce(comment.content, comment.imageFile) AS postOrCommentContent,
+    comment.creationDate AS postOrCommentCreationDate
+ORDER BY
+    postOrCommentCreationDate DESC,
+    toInteger(postOrCommentId) ASC
+LIMIT 20

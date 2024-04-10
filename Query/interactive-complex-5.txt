@@ -1,0 +1,18 @@
+MATCH (person:Person { id: "21866935" })-[:knows*1..3]-(otherPerson)
+WHERE person <> otherPerson
+WITH otherPerson
+ORDER BY otherPerson.lastName
+RETURN DISTINCT otherPerson
+LIMIT 20
+
+MATCH (otherPerson:Person)<-[membership:hasMember]-(forum:Forum)
+WITH
+    forum,
+    membership
+RETURN forum, membership
+
+OPTIONAL MATCH (post:Post)<-[:containerOf]-(forum:Forum)
+RETURN post, forum
+
+OPTIONAL MATCH (otherPerson2:Person)<-[:hasCreator]-(post:Post)
+RETURN otherPerson2, post

@@ -1,0 +1,11 @@
+MATCH (n3:MyNode{id: "42046756"})-[:wikiPageWikiLink]-(n4:MyNode)
+RETURN n4.id
+
+MATCH (n2:MyNode)-[:recordedIn]-(n3:MyNode{id: "42046756"})
+RETURN n2.id
+
+MATCH (n1:MyNode)-[:wikiPageWikiLink]-(n2:MyNode)
+RETURN n1.id
+
+MATCH (n1:MyNode)-[:wikiPageWikiLink]-(n4:MyNode)
+RETURN n4.id

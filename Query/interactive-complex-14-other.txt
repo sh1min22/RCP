@@ -1,0 +1,20 @@
+MATCH (start:Person {id: "933"})-[:knows]-(end:Person)
+RETURN end.id
+
+MATCH (start:Person)-[:knows]-(end:Person)
+RETURN end.id
+
+MATCH (pA:Person)<-[:hasCreator]-(m1:Comment)
+RETURN m1.id
+
+MATCH (m2:Comment)-[:hasCreator]->(pB:Person)
+RETURN m2.id
+
+MATCH (m2:Post)-[:hasCreator]->(pB:Person)
+RETURN m2.id
+
+MATCH (m1:Comment)-[r:replyOf]-(m2:Comment)
+RETURN DISTINCT m2.id
+
+MATCH (m1:Comment)-[r:replyOf]-(m2:Post)
+RETURN DISTINCT m2.id

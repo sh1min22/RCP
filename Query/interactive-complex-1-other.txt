@@ -1,0 +1,52 @@
+MATCH (p:Person {id: "933"})-[:knows]-(friend:Person)
+WHERE NOT p=friend
+RETURN friend
+
+MATCH (friend:Person)-[:knows]-(otherPerson:Person)
+RETURN otherPerson
+
+MATCH (friend:Person)-[:knows]-(otherPerson:Person)
+RETURN otherPerson
+
+MATCH (friend:Person)-[:isLocatedIn]->(friendCity:Place)
+RETURN friendCity
+
+MATCH (friend:Person)
+WITH friend
+OPTIONAL MATCH (friend:Person)-[studyAt:studyAt]->(uni:Organisation)
+WITH friend, collect(
+    CASE
+        WHEN uni IS NULL THEN null
+        ELSE [uni.name, studyAt.classYear, uni.id]
+    END ) AS unis
+RETURN unis, friend.id
+
+OPTIONAL MATCH (uni:Organisation)-[:isLocatedIn]->(uniCity:Place)
+RETURN uniCity.name, uni.id
+
+MATCH (friend:Person)
+WITH friend
+OPTIONAL MATCH (friend:Person)-[workAt:workAt]->(company:Organisation)
+WITH friend, collect(
+    CASE
+        WHEN company IS NULL then null
+        ELSE [company.name, workAt.workFrom, company.id]
+    END ) AS companies
+RETURN
+    friend.id AS friendId,
+    friend.lastName AS friendLastName,
+    friend.birthday AS friendBirthday,
+    friend.creationDate AS friendCreationDate,
+    friend.gender AS friendGender,
+    friend.browserUsed AS friendBrowserUsed,
+    friend.locationIP AS friendLocationIp,
+    friend.email AS friendEmails,
+    friend.speaks AS friendLanguages,
+    companies AS friendCompanies
+ORDER BY
+    friendLastName ASC,
+    toInteger(friendId) ASC
+LIMIT 20
+
+OPTIONAL MATCH (company:Organisation)-[:isLocatedIn]->(companyCountry:Place)
+RETURN companyCountry, company.id

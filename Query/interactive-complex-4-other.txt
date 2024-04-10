@@ -1,0 +1,12 @@
+MATCH (person:Person {id: "933" })-[:knows]-(friend:Person)
+RETURN DISTINCT friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN DISTINCT friend
+
+MATCH (friend:Person)<-[:hasCreator]-(post:Post)
+RETURN post
+
+MATCH (post:Post)-[:hasTag]->(tag)
+RETURN DISTINCT tag, post
+LIMIT 10

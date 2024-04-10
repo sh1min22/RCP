@@ -1,0 +1,17 @@
+MATCH (person:Person {id: "933"})<-[:hasCreator]-(message:Comment)
+RETURN message
+
+MATCH (person:Person {id: "933"})<-[:hasCreator]-(message:Post)
+RETURN message
+
+MATCH (person:Person {id: "933"})-[:knows]-(knowperson:Person)
+RETURN knowperson
+
+MATCH (p:Person)-[:knows]-(knowperson:Person)
+RETURN knowperson
+
+MATCH (message:Comment)<-[like:likes]-(liker:Person)
+RETURN message.id, message.creationDate, coalesce(message.content, message.imageFile) AS commentOrPostContent, liker, like
+
+MATCH (message:Post)<-[like:likes]-(liker:Person)
+RETURN message.id, message.creationDate, coalesce(message.content, message.imageFile) AS commentOrPostContent, liker, like

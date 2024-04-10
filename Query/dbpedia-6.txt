@@ -1,0 +1,13 @@
+MATCH (n2:MyNode)-[:recordedIn]-(n3:MyNode{id: "42046756"})
+RETURN n2.id
+
+MATCH
+    (n1:MyNode)-[:wikiPageWikiLink]-(n2:MyNode),
+    (n3:MyNode{id: "42046756"})-[:wikiPageWikiLink]-(n4:MyNode),
+    path = shortestPath((n1)-[:wikiPageWikiLink*]-(n4))
+RETURN
+    CASE path IS NULL
+        WHEN true THEN -1
+        ELSE length(path)
+    END AS shortestPathLength
+LIMIT 1

@@ -1,0 +1,17 @@
+MATCH (m:Comment {id: "7146854698452" })<-[:replyOf]-(c:Comment)
+RETURN c.id AS commentId, c.content AS commentContent, c.creationDate AS commentCreationDate
+
+MATCH (m:Comment)<-[:replyOf]-(c:Comment)
+RETURN c.id AS commentId, c.content AS commentContent, c.creationDate AS commentCreationDate
+
+MATCH (c:Comment)-[:hasCreator]->(p:Person)
+RETURN c.id AS commentId, p.id AS replyAuthorId, p.firstName AS replyAuthorFirstName, p.lastName AS replyAuthorLastName
+
+MATCH (m:Comment {id: "7146854698452" })-[:hasCreator]->(a:Person)
+RETURN a.id AS OriginalAuthorId
+
+MATCH (a:Person)-[r:knows]-(knowsPerson:Person)
+RETURN knowsPerson.id
+
+MATCH (a:Person)-[r:knows]-(knowsPerson:Person)
+RETURN knowsPerson.id

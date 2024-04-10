@@ -1,0 +1,27 @@
+MATCH (:Person {id: "933"})<-[:hasCreator]-(message:Comment)
+RETURN
+ message.id AS messageId,
+ message.creationDate AS messageCreationDate
+ORDER BY messageCreationDate DESC, messageId ASC
+LIMIT 10
+
+MATCH (message:Comment)-[:replyOf]->(post:Post)
+RETURN
+ message.id AS messageId,
+ message.creationDate AS messageCreationDate,
+ coalesce(message.imageFile,message.content) AS messageContent,
+ post.id AS postId
+
+MATCH (message:Post)-[:replyOf]->(post:Post)
+RETURN
+ message.id AS messageId,
+ message.creationDate AS messageCreationDate,
+ coalesce(message.imageFile,message.content) AS messageContent,
+ post.id AS postId
+
+MATCH (post:Post)-[:hasCreator]->(person:Person)
+RETURN
+ post.id AS postId,
+ person.id AS personId,
+ person.firstName AS personFirstName,
+ person.lastName AS personLastName

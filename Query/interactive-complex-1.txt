@@ -1,0 +1,53 @@
+MATCH (p:Person {id: "21866935"}), (friend:Person)
+       WHERE NOT p=friend
+       WITH p, friend
+       MATCH path = shortestPath((p)-[:knows*1..3]-(friend))
+       WITH min(length(path)) AS distance, friend
+ORDER BY
+    friend.lastName ASC,
+    toInteger(friend.id) ASC
+RETURN distance, friend
+LIMIT 20
+
+MATCH (friend:Person)-[:isLocatedIn]->(friendCity:Place)
+RETURN friendCity
+
+MATCH (friend:Person)
+WITH friend
+OPTIONAL MATCH (friend:Person)-[studyAt:studyAt]->(uni:Organisation)
+WITH friend, collect(
+    CASE
+        WHEN uni IS NULL THEN null
+        ELSE [uni.name, studyAt.classYear, uni.id]
+    END ) AS unis
+RETURN unis, friend.id
+
+OPTIONAL MATCH (uni:Organisation)-[:isLocatedIn]->(uniCity:Place)
+RETURN uniCity.name, uni.id
+
+MATCH (friend:Person)
+WITH friend
+OPTIONAL MATCH (friend:Person)-[workAt:workAt]->(company:Organisation)
+WITH friend, collect(
+    CASE
+        WHEN company IS NULL then null
+        ELSE [company.name, workAt.workFrom, company.id]
+    END ) AS companies
+RETURN
+    friend.id AS friendId,
+    friend.lastName AS friendLastName,
+    friend.birthday AS friendBirthday,
+    friend.creationDate AS friendCreationDate,
+    friend.gender AS friendGender,
+    friend.browserUsed AS friendBrowserUsed,
+    friend.locationIP AS friendLocationIp,
+    friend.email AS friendEmails,
+    friend.speaks AS friendLanguages,
+    companies AS friendCompanies
+ORDER BY
+    friendLastName ASC,
+    toInteger(friendId) ASC
+LIMIT 20
+
+OPTIONAL MATCH (company:Organisation)-[:isLocatedIn]->(companyCountry:Place)
+RETURN companyCountry, company.id

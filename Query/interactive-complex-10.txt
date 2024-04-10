@@ -1,0 +1,29 @@
+MATCH (person:Person {id: "21866935"})-[:knows*2..3]-(friend)
+WHERE NOT friend=person AND
+      NOT (friend)-[:knows]-(person)
+WITH friend
+ORDER BY friend.creationDate DESC
+RETURN DISTINCT friend
+LIMIT 100
+
+MATCH (friend:Person)-[:isLocatedIn]->(city:Place)
+RETURN friend, city
+
+MATCH (tag:Tag)<-[:hasInterest]-(person:Person {id: "21866935"})
+RETURN tag
+
+OPTIONAL MATCH (friend)<-[:hasCreator]-(post:Post)
+RETURN friend, post
+
+MATCH (post:Post)-[:hasTag]->(tag:Tag)
+RETURN post, tag
+
+OPTIONAL MATCH (friend:Person)<-[:hasCreator]-(post:Post)
+WITH friend, collect(post) AS posts
+WITH friend,
+     size(posts) AS postCount
+RETURN friend.id AS personId,
+       friend.firstName AS personFirstName,
+       friend.lastName AS personLastName,
+       friend.gender AS personGender,
+       postCount

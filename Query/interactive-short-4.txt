@@ -1,0 +1,4 @@
+MATCH (m:Comment {id: "6" })
+RETURN
+    m.creationDate as messageCreationDate,
+    coalesce(m.content, m.imageFile) as messageContent

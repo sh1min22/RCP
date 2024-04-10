@@ -1,0 +1,18 @@
+MATCH (start:Person {id: "21866935"}), (end:Person {id: "21867116"}),
+      path = shortestPath((start)-[:knows*..15]-(end)) 
+RETURN nodes(path) as pathNodes
+
+MATCH (pA:Person)<-[:hasCreator]-(m1:Comment)
+RETURN m1.id
+
+MATCH (m2:Comment)-[:hasCreator]->(pB:Person)
+RETURN m2.id
+
+MATCH (m2:Post)-[:hasCreator]->(pB:Person)
+RETURN m2.id
+
+MATCH (m1:Comment)-[r:replyOf]-(m2:Comment)
+RETURN DISTINCT m2.id
+
+MATCH (m1:Comment)-[r:replyOf]-(m2:Post)
+RETURN DISTINCT m2.id

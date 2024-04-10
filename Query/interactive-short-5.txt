@@ -1,0 +1,12 @@
+MATCH (m:Comment {id:  "6" })-[:hasCreator]->(p:Person)
+RETURN
+    p.id AS personId
+
+MATCH (author:Person)-[:knows*1..2]-(p:Person)
+WITH p
+ORDER BY p.lastName ASC
+RETURN
+    p.id AS personId,
+    p.firstName AS firstName,
+    p.lastName AS lastName
+LIMIT 20

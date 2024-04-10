@@ -1,0 +1,21 @@
+MATCH (tag:Tag)-[:hasType]->(baseTagClass:Tagclass)
+WHERE tag.id = "211" OR baseTagClass.id = "211"
+return tag
+
+MATCH (:Person {id: "933" })-[:knows]-(friend:Person)
+RETURN friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN friend
+
+MATCH (friend:Person)<-[:hasCreator]-(comment:Comment)
+RETURN friend, comment
+
+MATCH (comment:Comment)-[:replyOf]->(post:Post)
+RETURN comment, post
+
+MATCH (post:Post)-[:hasTag]->(tag:Tag)
+RETURN post, tag

@@ -1,0 +1,42 @@
+MATCH (countryX:Place {id: "2" }),
+      (countryY:Place {id: "70" }),
+      (person:Person {id: "933"})
+RETURN countryX, countryY
+LIMIT 1
+
+MATCH (city:Place)-[:isPartOf]->(country:Place)
+RETURN city
+
+MATCH (person:Person {id: "933"})-[:knows]-(friend:Person)
+WHERE NOT person=friend
+RETURN friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN friend
+
+MATCH (friend:Person)-[:isLocatedIn]->(city:Place)
+RETURN friend, city
+LIMIT 10
+
+MATCH (friend:Person)<-[:hasCreator]-(message:Post)
+WITH friend, collect(message.id) AS messages
+RETURN friend, messages
+
+MATCH (friend:Person)<-[:hasCreator]-(message:Comment)
+WITH friend, collect(message.id) AS messages
+RETURN friend, messages
+
+MATCH (message:Post)-[:isLocatedIn]->(country:Place)
+WITH message,
+     CASE WHEN country.id='2' THEN 0 ELSE 1 END AS messageX,
+     CASE WHEN country.id='70' THEN 0 ELSE 1 END AS messageY
+RETURN message, messageX, messageY
+
+MATCH (message:Comment)-[:isLocatedIn]->(country:Place)
+WITH message,
+     CASE WHEN country.id='2' THEN 0 ELSE 1 END AS messageX,
+     CASE WHEN country.id='70' THEN 0 ELSE 1 END AS messageY
+RETURN message, messageX, messageY 

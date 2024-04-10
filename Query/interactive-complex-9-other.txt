@@ -1,0 +1,32 @@
+MATCH (root:Person {id: "933" })-[:knows]-(friend:Person)
+WHERE NOT friend = root
+RETURN distinct friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN distinct friend
+
+MATCH (friend:Person)<-[:hasCreator]-(message:Comment)
+RETURN
+    friend.id AS personId,
+    friend.firstName AS personFirstName,
+    friend.lastName AS personLastName,
+    message.id AS commentOrPostId,
+    coalesce(message.content,message.imageFile) AS commentOrPostContent,
+    message.creationDate AS commentOrPostCreationDate
+ORDER BY
+    commentOrPostCreationDate DESC,
+    message.id ASC
+LIMIT 20
+
+MATCH (friend:Person)<-[:hasCreator]-(message:Post)
+RETURN
+    friend.id AS personId,
+    friend.firstName AS personFirstName,
+    friend.lastName AS personLastName,
+    message.id AS commentOrPostId,
+    coalesce(message.content,message.imageFile) AS commentOrPostContent,
+    message.creationDate AS commentOrPostCreationDate
+ORDER BY
+    commentOrPostCreationDate DESC,
+    message.id ASC
+LIMIT 20

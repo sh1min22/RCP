@@ -1,0 +1,22 @@
+MATCH (person:Person { id: "87095182" })-[:knows]-(otherPerson:Person)
+WHERE
+    person <> otherPerson
+RETURN otherPerson
+
+MATCH (p:Person)-[:knows]-(otherPerson:Person)
+RETURN otherPerson
+
+MATCH (p:Person)-[:knows]-(otherPerson:Person)
+RETURN otherPerson
+
+MATCH (otherPerson:Person)<-[membership:hasMember]-(forum:Forum)
+WITH
+    forum,
+    membership
+RETURN forum, membership
+
+OPTIONAL MATCH (post:Post)<-[:containerOf]-(forum:Forum)
+RETURN post, forum
+
+OPTIONAL MATCH (otherPerson2:Person)<-[:hasCreator]-(post:Post)
+RETURN otherPerson2, post

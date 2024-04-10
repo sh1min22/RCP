@@ -1,0 +1,9 @@
+MATCH (p{id: "29965873"})<-[:influences]-(p1)
+WHERE p <> p1
+RETURN p1
+
+MATCH (p)<-[:influences]-(p1)
+RETURN p1
+
+MATCH (p)<-[:influences]-(p1)
+RETURN p1

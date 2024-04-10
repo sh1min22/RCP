@@ -1,0 +1,6 @@
+MATCH (n:MyNode{id: "79534"})-[:subject]->(n2:MyNode)
+RETURN n2.id
+
+MATCH (n2:Mynode)-[:wikiPageWikiLink*1..2]-(n3:MyNode)
+RETURN n3.id
+LIMIT 20

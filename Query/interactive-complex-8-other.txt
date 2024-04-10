@@ -1,0 +1,20 @@
+MATCH (start:Person {id: "15393162840353"})<-[:hasCreator]-(message:Comment)
+RETURN message
+
+MATCH (start:Person {id: "15393162840353"})<-[:hasCreator]-(message:Post)
+RETURN message
+
+MATCH (message:Comment)<-[:replyOf]-(comment:Comment)
+RETURN comment
+
+MATCH (message:Comment)<-[:replyOf]-(comment:Comment)
+RETURN comment
+
+MATCH (message:Post)<-[:replyOf]-(comment:Comment)
+RETURN comment
+
+MATCH (message:Post)<-[:replyOf]-(comment:Comment)
+RETURN comment
+
+MATCH (comment:Comment)-[:hasCreator]->(person:Person)
+RETURN comment, person

@@ -1,0 +1,18 @@
+MATCH (start:Person {id: "21877091"})<-[:hasCreator]-(message:Comment)
+RETURN message
+
+MATCH (start:Person {id: "21877091"})<-[:hasCreator]-(message:Post)
+RETURN message
+
+MATCH (message:Comment)<-[:replyOf*1..2]-(comment:Comment)
+WITH comment
+ORDER BY toInteger(comment.id) ASC
+RETURN comment
+
+MATCH (message:Post)<-[:replyOf*1..2]-(comment:Comment)
+WITH comment
+ORDER BY toInteger(comment.id) ASC
+RETURN comment
+
+MATCH (comment:Comment)-[:hasCreator]->(person:Person)
+RETURN comment, person

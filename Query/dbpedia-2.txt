@@ -1,0 +1,6 @@
+MATCH (n1:MyNode{id: "916530"})-[:wikiPageWikiLink*1..2]-(n2:MyNode)
+RETURN n2.id
+LIMIT 10
+
+MATCH (n2:MyNode)-[:wikiPageRedirects]-(n3:MyNode)
+RETURN n3.id

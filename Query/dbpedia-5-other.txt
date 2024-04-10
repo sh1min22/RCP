@@ -1,0 +1,11 @@
+MATCH (n1:MyNode{id: "41964482"})-[:wikiPageWikiLink]-(n2:MyNode)
+RETURN n2.id
+
+MATCH (n1:MyNode)-[:wikiPageWikiLink]-(n2:MyNode)
+RETURN n2.id
+
+MATCH (n2:MyNode)-[:wikiPageWikiLink]-(n3:MyNode{id: "43470284"})
+RETURN n2.id
+
+MATCH (n2:MyNode)-[:wikiPageWikiLink]-(n3:MyNode)
+RETURN n2.id

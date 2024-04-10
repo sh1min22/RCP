@@ -1,0 +1,15 @@
+MATCH (m:Comment {id:  "5497558962708" })-[:hasCreator]->(p:Person)
+RETURN
+    p.id AS personId
+
+MATCH (author:Person)-[:knows]-(p:Person)
+RETURN
+    p.id AS personId,
+    p.firstName AS firstName,
+    p.lastName AS lastName
+
+MATCH (person:Person)-[:knows]-(p:Person)
+RETURN
+    p.id AS personId,
+    p.firstName AS firstName,
+    p.lastName AS lastName

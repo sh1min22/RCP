@@ -1,0 +1,3 @@
+MATCH (n1:MyNode{id: "41964482"})-[:wikiPageWikiLink*1..2]-(n2:MyNode)-[:wikiPageWikiLink*1..2]-(n3:MyNode{id: "43470284"})
+RETURN n2.id
+LIMIT 10

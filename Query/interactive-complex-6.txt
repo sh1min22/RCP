@@ -1,0 +1,16 @@
+MATCH (knownTag:Tag { id: "29964364" })
+RETURN knownTag.id as knownTagId
+
+MATCH (person:Person { id: "21866935" })-[:knows*1..2]-(friend:Person)
+WHERE NOT person=friend
+RETURN friend
+LIMIT 20
+
+MATCH (friend:Person)<-[:hasCreator]-(post:Post)
+RETURN post 
+
+MATCH (post:Post)-[:hasTag]->(tag:Tag)
+WITH tag, post
+ORDER BY tag.name ASC
+RETURN post, tag
+LIMIT 20

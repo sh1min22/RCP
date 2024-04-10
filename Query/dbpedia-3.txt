@@ -1,0 +1,12 @@
+MATCH (p{id: "1266510"})-[:siblings*1..2]->(sb)
+WHERE p <> sb
+RETURN sb.id
+LIMIT 5
+
+MATCH (p{id: "1266510"})-[:parents*1..2]->(pr)
+RETURN pr.id
+LIMIT 5
+
+MATCH (p)-[:depiction]->(dp)
+RETURN dp
+LIMIT 20

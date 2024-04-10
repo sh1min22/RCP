@@ -1,0 +1,15 @@
+MATCH (p{id: "1266510"})-[:siblings]->(sb)
+WHERE p <> sb
+RETURN sb.id
+
+MATCH (p)-[:siblings]->(sb)
+RETURN sb.id
+
+MATCH (p{id: "1266510"})-[:parents]->(pr)
+RETURN pr.id
+
+MATCH (p)-[:parents]->(pr)
+RETURN pr.id
+
+MATCH (p)-[:depiction]->(dp)
+RETURN dp

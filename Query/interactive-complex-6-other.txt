@@ -1,0 +1,15 @@
+MATCH (knownTag:Tag { id: "564" })
+RETURN knownTag.id as knownTagId
+
+MATCH (person:Person { id: "933" })-[:knows]-(friend:Person)
+WHERE NOT person=friend
+RETURN friend
+
+MATCH (p:Person)-[:knows]-(friend:Person)
+RETURN friend
+
+MATCH (friend:Person)<-[:hasCreator]-(post:Post)
+RETURN post 
+
+MATCH (post:Post)-[:hasTag]->(tag:Tag)
+RETURN post, tag

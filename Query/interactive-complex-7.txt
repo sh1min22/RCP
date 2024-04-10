@@ -1,0 +1,17 @@
+MATCH (person:Person {id: "21866935"})<-[:hasCreator]-(message:Comment)
+RETURN message
+
+MATCH (person:Person {id: "21866935"})<-[:hasCreator]-(message:Post)
+RETURN message
+
+MATCH (person:Person {id: "21866935"})-[:knows*1..3]-(knowperson:Person)
+WITH knowperson
+ORDER BY knowperson.birthday DESC
+RETURN knowperson
+LIMIT 10
+
+MATCH (message:Comment)<-[like:likes]-(liker:Person)
+RETURN message.id, message.creationDate, coalesce(message.content, message.imageFile) AS commentOrPostContent, liker, like
+
+MATCH (message:Post)<-[like:likes]-(liker:Person)
+RETURN message.id, message.creationDate, coalesce(message.content, message.imageFile) AS commentOrPostContent, liker, like
