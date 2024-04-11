@@ -22,6 +22,7 @@ This file is used to divide the LCC obtained in the previous step into different
 This file is used to divide the total node table into sub-node tables of each partition based on the set of nodes belonging to each partition obtained in the previous step.
 
 ## distributeData_relationships.cpp
+This file is used to partition the total edge table into sub-edge tables of each partition based on the set of LCCS belonging to each partition obtained in the previous step.
 
 ## txt2csv.cpp
 
