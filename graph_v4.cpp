@@ -22,8 +22,6 @@ int node_cnt[282640000];
 
 int ccnt = 1;
 
-// int property_num[] = {5, 2, 3, 7, 3, 7, 2, 2};
-// int new_property_num[] = {8, 6, 8, 3, 4, 3, 3, 4};
 int new_property_num[] = {6, 4, 8, 3, 8, 3, 3, 4};
 
 int judge_label(int node_id) {
@@ -63,22 +61,15 @@ void get_need_file(const std::string& path, std::vector<std::string>& paths, con
     if ((dir = opendir(path.c_str())) != nullptr) {
         while ((entry = readdir(dir)) != nullptr) {
             std::string filename = entry->d_name;
-
-			// cout<<"file name:"<<filename<<endl;
-
-            // 忽略当前目录和上级目录的项
             if (filename == "." || filename == "..") {
                 continue;
             }
 
             std::string full_path = path + "/" + filename;
-            if (entry->d_type == DT_DIR) {  // 如果是目录，则递归遍历子目录
+            if (entry->d_type == DT_DIR) {
                 get_need_file(full_path, paths, extension);
-            } else if (entry->d_type == DT_REG) {  // 只处理普通文件
-				// cout << filename << endl;
-				// cout << filename.substr(filename.find_last_of(".") + 1) <<endl;
-                if (filename.substr(filename.find_last_of(".") + 1) == extension) {  // 根据后缀进行筛选
-					// cout << 123 << endl;
+            } else if (entry->d_type == DT_REG) {
+                if (filename.substr(filename.find_last_of(".") + 1) == extension) {
                     paths.push_back(full_path);
                 }
             }
@@ -145,7 +136,6 @@ int readline(string strPath, int &line) {
 			line++;
 	}
 	is.close();
-	//cout << "line=" << line << endl;
 	return line;
 }
 
@@ -155,10 +145,6 @@ string getFileName(string origin_name) {
 	int pos = tline.find("relationships");
 	tline = tline.substr(pos + 14);
 
-    // int pos = tline.find("/");
-    // tline = tline.substr(pos + 1);
-    // pos = tline.find("/");
-    // tline = tline.substr(pos + 1);
     pos = tline.find(".");
     tline = tline.substr(0, pos);
     return tline;
@@ -182,16 +168,9 @@ void create_Connected(string filename) {
 	ifstream fin_relationships(file_name);
 	ifstream fin_relationships2(file_name);
 	vector<int> nodes;
-
-    // string file_name_clear = getFileName(file_name);
-	// cout << "file_name_clear: " << file_name_clear << endl;
-	// while(1) {
-
-	// }
-
+	
 	int line = 0;
 	int r_num = readline(file_name, line);
-	cout << line << " " << r_num << endl;
 
 	int n_num = 0;
 	string s;
@@ -200,16 +179,13 @@ void create_Connected(string filename) {
 		vector<string> node_u;
 		vector<string> node_v;
 		stringSplit1(s, " ", vec);
-//		cout << "vec:" << vec[2] << endl;
 		stringSplit1(vec[1], ":", node_u);
-		//cout << node[1];
 		int u = atoi(node_u[1].c_str());
 		stringSplit1(vec[2], ":", node_v);
 		int v = atoi(node_v[1].c_str());
 		nodes.push_back(u);
 		nodes.push_back(v);
-        node_cnt[u]++;
-		//cout << u << " " << v << endl;
+        	node_cnt[u]++;
 	}
 	fin_relationships.close();
 
@@ -226,17 +202,13 @@ void create_Connected(string filename) {
 
 		stringSplit1(s, " ", vec);
 		stringSplit1(vec[1], ":", node_u);
-		//cout << node[1];
 		int u = atoi(node_u[1].c_str());
 		stringSplit1(vec[2], ":", node_v);
 		int v = atoi(node_v[1].c_str());
-		//cout << u << "," << v << endl;
 		Union(u, v);
 	}
 
 	fin_relationships2.close();
-	cout << "nodes number:" << n_num << endl;
-	//cout << find(12661);
 	vector<int> t;
     t.push_back(11);
     for (int i = 0; i < 282640000; i++){
@@ -245,15 +217,12 @@ void create_Connected(string filename) {
 
 	int count = 0;
 	for (int i = 0; i < n_num; i++) {
-		// cout << "i:" << i << endl;
 		int fx = find(nodes[i]);
-		// cout << "fx:" << fx << endl;
 		if (fx == nodes[i]) {
 			count++;
 		}
 	}
 
-	cout << "count:" << count << endl;
 	fout2 << "connected components number:" << count << endl;
 
 	int cnt_has_find_father = 0;
@@ -262,22 +231,12 @@ void create_Connected(string filename) {
 		if (i % 100000 == 0) {
 			cout << i << endl;
 		}
-        nodes_parent[fx].second.push_back(nodes[i]);
-		// for(int j = 0; j < nodes_parent.size(); j++){
-		// 	if (fx == nodes_parent[j].first){
-		// 		nodes_parent[j].second.push_back(nodes[i]);
-		// 		cnt_has_find_father++;
-		// 		break;
-		// 	}
-		// }
+        	nodes_parent[fx].second.push_back(nodes[i]);
 	}
-	// cout << "cnt_has_find_father:" << cnt_has_find_father << endl;
 
-	cout << "connected components number:" << count << endl;
     string file_name_clear = getFileName(file_name);
     for (int i = 0; i < 282640000; i++) {
         if (nodes_parent[i].second.size() > 1) {
-            cout << "connected component[" << i << "]" << endl;
 		    fout << ccnt << " ";
 		    fout1 << ccnt << ":";
 			fout3 << ccnt << ":" << filename << endl;
@@ -307,9 +266,7 @@ int main() {
 	vector<string> my_file;
 	string need_extension = "txt";
 	get_need_file(file_path, my_file, need_extension);
-	cout << "my_file: " << my_file.size() << endl;
 	for (int i = 0; i < my_file.size(); i++) {
-		cout << "File " << i + 1 << " is:" << my_file[i] << endl;
 		create_Connected(my_file[i]);
 		parent.clear();
 		rank1.clear();
@@ -317,8 +274,6 @@ int main() {
 
     auto end = std::chrono::high_resolution_clock::now();
 
-    // 计算持续时间
-    // 我们以毫秒为单位计算时间
     std::chrono::duration<double, std::milli> duration = end - start;
 
     std::cout << "Time taken by the code: " << duration.count() << " ms" << std::endl;
