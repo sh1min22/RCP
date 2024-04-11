@@ -16,6 +16,7 @@ This file is used to process the txt files obtained in the previous step into th
 This section provides an overview of the steps and methods involved in partitioning.
 
 ## partition_v4.cpp
+This file is used to divide the LCC obtained in the previous step into different partitions considering both cost and benefit。
 
 ## distributeData_nodes.cpp
 
