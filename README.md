@@ -25,6 +25,7 @@ This file is used to divide the total node table into sub-node tables of each pa
 This file is used to partition the total edge table into sub-edge tables of each partition based on the set of LCCS belonging to each partition obtained in the previous step.
 
 ## txt2csv.cpp
+This file is used to convert the sub-node table and sub-edge table obtained in the previous step into a csv file.
 
 # Benchmark Queries
 The benchmark queries used in our experimental evaluation exists in #queries# folder.
