@@ -77,9 +77,9 @@ int cmp2(Region a, Region b) {
 
 void Stringsplit(string str, const char split,vector<string>& res)
 {
-	istringstream iss(str);	// 输入流
-	string token;			// 接收缓冲区
-	while (getline(iss, token, split))	// 以split为分隔符
+	istringstream iss(str);
+	string token;
+	while (getline(iss, token, split))
 	{
 		res.push_back(token);
 	}
@@ -101,10 +101,8 @@ int main() {
 		k++;
         conn_cnt++;
 	}
-    // cout << "conn_cnt:" << conn_cnt << endl;
     long long threshold = total_cost / partition_cnt;
 	sort(cc, cc + conn_cnt, cmp);
-    // cout << threshold << endl;
 
     ifstream fin1("/sys/fs/cgroup/new_SF100/region_component_v4.txt");
 	string line;
@@ -116,28 +114,23 @@ int main() {
 		vector<int> l_id;
 		int pos = line.find(":");
 		string tline = line.substr(pos + 1);
-        pcnt++;
-        // if (pcnt % 100000 == 0) {
-        //     cout << pcnt << endl;
-        // }
-        int now_loop = 0;
+        	pcnt++;
+        	int now_loop = 0;
 
-        vector<string> strList;
-        Stringsplit(tline, ',', strList);
-        for (int i = 0; i < strList.size(); i++) {
-            int tn = stoi(strList[i]);
-            l_id.push_back(tn);
-        }
+        	vector<string> strList;
+        	Stringsplit(tline, ',', strList);
+        	for (int i = 0; i < strList.size(); i++) {
+            		int tn = stoi(strList[i]);
+            		l_id.push_back(tn);
+        	}
 		id_list.push_back(l_id);
 	}
-    // cout << "输入完毕" << endl;
 
     for (int i = 0; i < partition_cnt; i++) {
         re[i].bh = i;
         re[i].cost = 0;
         re[i].si = 0;
     }
-    // cout << "re数组初始化完毕" << endl;
     string origin_str = "";
     for (int i = 0; i < partition_cnt; i++) {
         for (int j = 0; j < 282640000; j++) {
@@ -145,17 +138,12 @@ int main() {
             partition_bool[i][j] = 0;
         }
     }
-    // cout << "partition_number_cnt数组初始化完毕" << endl;
-    // cout << "初始化完毕" << endl;
 
     ofstream fout, fout1, fout2;
-    // fout2.open("partition_time_without_cout.txt");
 
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double, std::milli> duration = end - start;
-
-    // fout2 << "Time taken by the code: " << duration.count() << " ms" << endl;
 
     start = std::chrono::high_resolution_clock::now();
 	tcnt = conn_cnt;
@@ -165,29 +153,21 @@ int main() {
         partition_node_component.push_back(t_node_ini);
     }
     for (int i = 0; i < partition_cnt; i++) {
-        // cout << "i:" << i << endl;
         for (int k = 0; k < id_list[cc[i].bh].size(); k++){
-            // cout << "k:" << k << endl;
             int node_id = id_list[cc[i].bh][k];
             partition_node_component[i].push_back(node_id);
             partition_bool[i][node_id] = 1;
             partition_number_cnt[i][node_id]++;
         }
         re[i].cost += cc[i].cnt;
-        // cout << "re[i].cost:" << re[i].cost << endl;
         vector<int> tb;
         tb.push_back(cc[i].bh);
         partition_component.push_back(tb);
-        // cout << "处理下一个分区" << endl;
     }
 
     for (int i = partition_cnt; i < conn_cnt; i++) {
-        // 计算每个region对应的相似度
-        // cout << "second_i:" << i << endl;
-        // cout << "conn_cnt: " << i << endl;
         for (int j = 0; j < partition_cnt; j++) {
             int tsum = 0;
-            // cout << "size_of_id_list:" << id_list[cc[i].bh].size() << endl;
             for (int k = 0; k < id_list[cc[i].bh].size(); k++){
                 int node_id = id_list[cc[i].bh][k];
                 int tn = partition_number_cnt[j][node_id];
@@ -196,12 +176,9 @@ int main() {
             re[j].si = tsum;
         }
 
-        
-
         sort(re, re + partition_cnt, cmp1);
         for (int j = 0; j < partition_cnt; j++) {
             if (re[j].cost + cc[i].cnt < threshold) {
-                // cout << re[j].bh << endl;
                 for (int k = 0; k < id_list[cc[i].bh].size(); k++){
                     int node_id = id_list[cc[i].bh][k];
                     if (partition_bool[re[j].bh][node_id] == 0) {
@@ -225,18 +202,14 @@ int main() {
             }
         }
     }
-    // cout << "分发完毕" << endl;
 
     end = std::chrono::high_resolution_clock::now();
 
     duration = end - start;
 
-    // fout2 << "Time taken by the code: " << duration.count() << " ms" << endl;
-
     start = std::chrono::high_resolution_clock::now();
     string fout_name = "/sys/fs/cgroup/new_SF100/partition_result_all_" + to_string(partition_cnt);
     fout_name = fout_name + "_v2.txt";
-    // cout << "fout_name:" << fout_name << endl;
     string fout1_name = "/sys/fs/cgroup/new_SF100/region_node_component_" + to_string(partition_cnt);
     fout1_name = fout1_name + "_v2.txt";
 	fout.open(fout_name);
