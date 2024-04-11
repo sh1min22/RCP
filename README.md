@@ -7,7 +7,7 @@ relationship connectivity partitioning(RCP) is a edge-centric property graph par
 This section outlines the steps and methodologies involved in preprocessing the data.
 
 ## csv2txt.cpp
-This 
+This file is used to divide the edge csv files in the original data set into the corresponding txt files according to the relationship.
 
 # Partitioning
 The partitioning section describes how the dataset is divided or segmented into different parts. Partitioning can be based on various criteria, such as data type, usage, or other characteristics relevant to the project. This process is crucial for managing and analyzing data more efficiently.
