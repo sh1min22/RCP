@@ -13,7 +13,15 @@ This file is used to divide the edge csv files in the original data set into the
 This file is used to process the txt files obtained in the previous step into the corresponding LCC set. The set of interconnected nodes is divided into an LCC by connecting different nodes by edges.
 
 # Partitioning
-The partitioning section describes how the dataset is divided or segmented into different parts. Partitioning can be based on various criteria, such as data type, usage, or other characteristics relevant to the project. This process is crucial for managing and analyzing data more efficiently.
+This section provides an overview of the steps and methods involved in partitioning.
+
+## partition_v4.cpp
+
+## distributeData_nodes.cpp
+
+## distributeData_relationships.cpp
+
+## txt2csv.cpp
 
 # Benchmark Queries
 The benchmark queries used in our experimental evaluation exists in #queries# folder.
