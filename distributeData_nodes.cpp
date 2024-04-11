@@ -9,8 +9,8 @@
 #include <dirent.h>
 using namespace std;
 
-vector<vector<int>> conn_node_list;      //各分区的节点id
-vector<vector<int>> connected_component_list;       //各连通子图包含的点id
+vector<vector<int>> conn_node_list;
+vector<vector<int>> connected_component_list;
 struct Node {
     string label;
     int id;
@@ -20,9 +20,9 @@ struct Node {
 
 void Stringsplit(string str, const char split,vector<string>& res)
 {
-	istringstream iss(str);	// 输入流
-	string token;			// 接收缓冲区
-	while (getline(iss, token, split))	// 以split为分隔符
+	istringstream iss(str);
+	string token;
+	while (getline(iss, token, split) {
 	{
 		res.push_back(token);
 	}
@@ -40,18 +40,17 @@ void get_need_file(const std::string& path, std::vector<std::string>& paths, con
 
 			// cout<<"file name:"<<filename<<endl;
 
-            // 忽略当前目录和上级目录的项
             if (filename == "." || filename == "..") {
                 continue;
             }
 
             std::string full_path = path + "/" + filename;
-            if (entry->d_type == DT_DIR) {  // 如果是目录，则递归遍历子目录
+            if (entry->d_type == DT_DIR) {
                 get_need_file(full_path, paths, extension);
-            } else if (entry->d_type == DT_REG) {  // 只处理普通文件
+            } else if (entry->d_type == DT_REG) {
 				// cout << filename << endl;
 				// cout << filename.substr(filename.find_last_of(".") + 1) <<endl;
-                if (filename.substr(filename.find_last_of(".") + 1) == extension) {  // 根据后缀进行筛选
+                if (filename.substr(filename.find_last_of(".") + 1) == extension) {
 					// cout << 123 << endl;
                     paths.push_back(full_path);
                 }
@@ -71,7 +70,7 @@ int main(){
             continue;
         }
         int pos = line.find(":");
-		string tline = line.substr(pos + 1);
+	string tline = line.substr(pos + 1);
         vector<int> node_id;
         vector<string> strList;
         Stringsplit(tline, ',', strList);
@@ -85,9 +84,7 @@ int main(){
         }
         conn_node_list.push_back(node_id);
     }
-    cout << "line_cnt: " << line_cnt << endl;
-
-    cout << "region_node_component_8.txt输入完毕" << endl;
+    // cout << "line_cnt: " << line_cnt << endl;
 
     ifstream fin2("/sys/fs/cgroup/new_SF100/new_output_nodes.txt");
     string node_line;
@@ -103,19 +100,11 @@ int main(){
         node[node_cnt].label = tlabel;
         node_cnt++;
     }
-    cout << "node_cnt: " << node_cnt << endl;
-    cout << node[0].label << endl;
-    cout << node[0].label.length() << endl;
-    cout << "new_output_nodes.txt输入完毕" << endl;
 
     int now_partition_id = 0;
     string file_label_list[8] = {"post", "comment", "forum", "person", "place", "organisation", "tag", "tagclass"};
-    cout << file_label_list[0] << endl;
-    cout << file_label_list[0].length() << endl;
-    cout << "开始分发数据" << endl;
     
     while (now_partition_id < 8){
-        cout << "now_partition_id:" << now_partition_id << endl;
         ofstream fout0, fout1, fout2, fout3, fout4, fout5, fout6, fout7, fout8;
         string fout_name0 = "/sys/fs/cgroup/new_SF100/partition_txt/partition_" + to_string(now_partition_id) + "/" + file_label_list[0] + "_0_0.txt";
         string fout_name1 = "/sys/fs/cgroup/new_SF100/partition_txt/partition_" + to_string(now_partition_id) + "/" + file_label_list[1] + "_0_0.txt";
@@ -133,8 +122,6 @@ int main(){
         fout5.open(fout_name5);
         fout6.open(fout_name6);
         fout7.open(fout_name7);
-        cout << "开始向该文件输入数据" << endl;
-        cout << "size:" << conn_node_list[now_partition_id].size() << endl;
         for (int i = 0; i < conn_node_list[now_partition_id].size(); i++) {
             int bh = conn_node_list[now_partition_id][i];
             if (node[bh].label == file_label_list[0]) {
