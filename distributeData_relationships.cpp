@@ -9,16 +9,16 @@
 #include <dirent.h>
 using namespace std;
 
-vector<vector<int>> conn_list;      //各分区的连通子图id
-vector<string> label_list;          //各连通子图的label
-vector<vector<int>> connected_component_list;       //各连通子图包含的点id
+vector<vector<int>> conn_list;
+vector<string> label_list;
+vector<vector<int>> connected_component_list;
 vector<string> relationship_line;
 
 void Stringsplit(string str, const char split,vector<string>& res)
 {
-	istringstream iss(str);	// 输入流
-	string token;			// 接收缓冲区
-	while (getline(iss, token, split))	// 以split为分隔符
+	istringstream iss(str);
+	string token;	
+	while (getline(iss, token, split))
 	{
 		res.push_back(token);
 	}
@@ -33,22 +33,16 @@ void get_need_file(const std::string& path, std::vector<std::string>& paths, con
     if ((dir = opendir(path.c_str())) != nullptr) {
         while ((entry = readdir(dir)) != nullptr) {
             std::string filename = entry->d_name;
-
-			// cout<<"file name:"<<filename<<endl;
-
-            // 忽略当前目录和上级目录的项
+		
             if (filename == "." || filename == "..") {
                 continue;
             }
 
             std::string full_path = path + "/" + filename;
-            if (entry->d_type == DT_DIR) {  // 如果是目录，则递归遍历子目录
+            if (entry->d_type == DT_DIR) {
                 get_need_file(full_path, paths, extension);
-            } else if (entry->d_type == DT_REG) {  // 只处理普通文件
-				// cout << filename << endl;
-				// cout << filename.substr(filename.find_last_of(".") + 1) <<endl;
-                if (filename.substr(filename.find_last_of(".") + 1) == extension) {  // 根据后缀进行筛选
-					// cout << 123 << endl;
+            } else if (entry->d_type == DT_REG) {
+                if (filename.substr(filename.find_last_of(".") + 1) == extension) {
                     paths.push_back(full_path);
                 }
             }
@@ -74,12 +68,11 @@ int main(){
             continue;
         }
         int pos = line.find(":");
-		string tline = line.substr(pos + 1);
+	string tline = line.substr(pos + 1);
         vector<int> cc_id;
         vector<string> strList;
         Stringsplit(tline, ',', strList);
         for (int i = 0; i < strList.size(); i++) {
-            // cout << "strList[i]: " << strList[i] << " " << strList[i].length() << endl;
             if (strList[i] == " ") {
                 continue;
             }
@@ -88,9 +81,6 @@ int main(){
         }
         conn_list.push_back(cc_id);
     }
-    cout << "line_cnt: " << line_cnt << endl;
-
-    cout << "partition_result_all_8_v2.txt输入完毕" << endl;
 
     ifstream fin2("/sys/fs/cgroup/new_SF100/connected_label_v4_clear.txt");
     string cc_line;
@@ -100,7 +90,6 @@ int main(){
         string cc_label = cc_line.substr(pos + 1);
         label_list.push_back(cc_label);
     }
-    cout << "connected_label_v4_clear.txt输入完毕" << endl;
 
     ifstream fin3("/sys/fs/cgroup/new_SF100/region_component_v4.txt");
     string node_line;
@@ -111,7 +100,7 @@ int main(){
     while(getline(fin3, node_line)){
         cc_cnt++;
         int pos = node_line.find(":");
-		string tline = node_line.substr(pos + 1);
+	string tline = node_line.substr(pos + 1);
         vector<int> node_id;
         vector<string> strList;
         Stringsplit(tline, ',', strList);
@@ -119,10 +108,8 @@ int main(){
             int tn = stoi(strList[i]);
             node_id.push_back(tn);
         }
-		connected_component_list.push_back(node_id);
+	connected_component_list.push_back(node_id);
     }
-    cout << "cc_cnt: " << cc_cnt << endl;
-    cout << "region_component_v4.txt输入完毕" << endl;
 
     ifstream fin4("/sys/fs/cgroup/new_SF100/new_output_relationships.txt");
     string r_line;
@@ -131,8 +118,6 @@ int main(){
         relationship_line.push_back(r_line);
         r_cnt++;
     }
-    cout << "r_cnt: " << r_cnt << endl;
-    cout << "new_output_relationships.txt输入完毕" << endl;
 
     int now_partition_id = 0;
     string file_path = "/sys/fs/cgroup/new_SF100/new_output_relationships";
@@ -142,57 +127,35 @@ int main(){
 
     for (int i = 0; i < my_file.size(); i++){
         string tline = my_file[i];
-        // cout << my_file[i] << endl;
         int pos = tline.find("relationships");
         tline = tline.substr(pos + 14);
         pos = tline.find(".");
-        tline = tline.substr(0, pos);
-        // cout << "tline: " << tline << endl;
+        tline = tline.substr(0, pos)
         file_list.push_back(tline);
     }
-    cout << "开始分发数据" << endl;
     while (now_partition_id < 8){
-        cout << "now_partition_id:" << now_partition_id << endl;
-
-        // now_partition_id = 1;
-        // if (now_partition_id != 1) {
-        //     break;
-        // }
-
         for (int i = 0; i < my_file.size(); i++){
-            cout << "my_file:" << my_file[i] << endl;
             set<int> conn_id_list;
-            cout << "conn_list:" << conn_list[now_partition_id].size() << endl;
-            cout << "cc_label: " << label_list[conn_list[now_partition_id][0]] << endl;
             for (int j = 0; j < conn_list[now_partition_id].size(); j++){
                 int bh = conn_list[now_partition_id][j];
-                cout << bh << " " << label_list[bh] << endl;
-                // cout << label_list[bh] << " " << file_list[i] << endl;
                 if (label_list[bh] == file_list[i]){
                     for (int k = 0; k < connected_component_list[bh].size(); k++){
                         conn_id_list.insert(connected_component_list[bh][k]);
                     }
                 }
             }
-            cout << "conn_id_list.size(): " << conn_id_list.size() << endl;
             if (conn_id_list.size() == 0) {
                 continue;
             }
             ifstream tfin(my_file[i]);
             ofstream tout1, tout2, tout3, tout4;
             int out_file_cnt = 1;
-            // string fout_name = "./partition_txt/partition_" + to_string(now_partition_id) + "/" + file_list[i] + ".txt";
-            // cout << "fout_name:" << fout_name << endl;
-            // tout.open(fout_name);
             string re_line;
-            cout << "开始向该文件输入数据" << endl;
             string label1 = "";
             string label2 = "";
             int has_init = 0;
             while (getline(tfin, re_line)) {
-                // cout << "re_line: " << re_line << " " << conn_id_list.size() << endl;
                 if (has_init == 0) {
-                    // cout << re_line << endl;
                     int pos = re_line.find(' ');
                     string tline = re_line.substr(pos + 1);
                     pos = tline.find(".id");
@@ -203,10 +166,7 @@ int main(){
                     label2 = tline.substr(0, pos);
                     label1 = toLowercase(label1);
                     label2 = toLowercase(label2);
-                    cout << "label1: " << label1 << endl;
-                    cout << "label2: " << label2 << endl;
                     string fout_name = "/sys/fs/cgroup/new_SF100/partition_txt/partition_" + to_string(now_partition_id) + "/" + label1 + "_" + file_list[i] + "_" + label2 + ".txt";
-                    cout << fout_name << endl;
                     tout1.open(fout_name);
                     has_init = 1;
                 }
@@ -225,7 +185,6 @@ int main(){
                     label1 = tlabel1;
                     label2 = tlabel2;
                     string fout_name = "/sys/fs/cgroup/new_SF100/partition_txt/partition_" + to_string(now_partition_id) + "/" + label1 + "_" + file_list[i] + "_" + label2 + ".txt";
-                    cout << "fout_name: " << fout_name << endl;
                     if (out_file_cnt == 2) {
                         tout2.open(fout_name);
                     }
@@ -247,11 +206,9 @@ int main(){
                 string tid2 = treline.substr(0, tpos);
                 int txtid1 = stoi(tid1);
                 int txtid2 = stoi(tid2);
-                // cout << txtid1 << " " << txtid2 << endl;
                 set<int>::iterator it1 = conn_id_list.find(txtid1);
                 set<int>::iterator it2 = conn_id_list.find(txtid2);
                 if (it1 != conn_id_list.end() && it2 != conn_id_list.end()) {
-                    // 获取id
                     int pos = re_line.find(":");
                     string teline = re_line.substr(pos + 1);
                     pos = teline.find(' ');
